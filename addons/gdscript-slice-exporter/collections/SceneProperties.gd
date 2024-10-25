@@ -1,12 +1,12 @@
-tool
+@tool
 extends Resource
 class_name SceneProperties
 
-export var scene: PackedScene
+@export var scene: PackedScene
 
-export var viewport_size: Vector2 = Vector2(
-	float(ProjectSettings.get_setting("display/window/size/width")),
-	float(ProjectSettings.get_setting("display/window/size/height"))
+@export var viewport_size: Vector2 = Vector2(
+	float(ProjectSettings.get_setting("display/window/size/viewport_width")),
+	float(ProjectSettings.get_setting("display/window/size/viewport_height"))
 )
 
 

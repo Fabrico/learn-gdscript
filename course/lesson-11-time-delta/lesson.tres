@@ -256,10 +256,10 @@ starting_code = "func _process(delta):
 	rotate(2)"
 cursor_line = 0
 cursor_column = 0
-hints = PoolStringArray( "Multiply the radians by [code]delta[/code]" )
+hints = PackedStringArray( "Multiply the radians by [code]delta[/code]" )
 validator_script_path = "rotating-using-delta/TestsRotatingDelta.gd"
 script_slice_path = "rotating-using-delta/RotatingSpriteDelta.live-editor/slices/RotatingSpriteDelta.move_and_rotate.slice.tres"
-documentation_references = PoolStringArray( "rotate" )
+documentation_references = PackedStringArray( "rotate" )
 documentation_resource = ExtResource( 2 )
 description = ""
 
@@ -276,10 +276,10 @@ starting_code = "func _process(delta):
 	"
 cursor_line = 0
 cursor_column = 0
-hints = PoolStringArray( "Call the [code]rotate()[/code] and [code]move_local_x()[/code] functions", "Make sure to multiply each parameter by [code]delta[/code]" )
+hints = PackedStringArray( "Call the [code]rotate()[/code] and [code]move_local_x()[/code] functions", "Make sure to multiply each parameter by [code]delta[/code]" )
 validator_script_path = "rotating-and-moving-delta/TestsRotatingMovingDelta.gd"
 script_slice_path = "rotating-and-moving-delta/RotatingMovingSpriteDelta.live-editor/slices/RotatingMovingSpriteDelta.move_and_rotate.slice.tres"
-documentation_references = PoolStringArray( "rotate", "move_local_x" )
+documentation_references = PackedStringArray( "rotate", "move_local_x" )
 documentation_resource = ExtResource( 2 )
 description = ""
 

@@ -7,7 +7,7 @@
 script = ExtResource( 1 )
 nodes_paths = [ NodePath("Level/Player") ]
 script_file = ExtResource( 2 )
-original_script = "extends KinematicBody2D
+original_script = "extends CharacterBody2D
 
 export var jump_speed := 200
 export var jump_max_height := 100.0
@@ -15,7 +15,7 @@ export var gravity := 4000
 
 var is_walking := false
 
-onready var animated_sprite := $AnimatedSprite as AnimatedSprite
+onready var animated_sprite := $AnimatedSprite2D as AnimatedSprite2D
 
 var _velocity_y = 0.0
 var _jump_starting_point := 0.0

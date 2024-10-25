@@ -50,7 +50,7 @@ func copy_cells():
 			is_not_in_position = true
 		sub_tilemap.tile_set = tilemap.tile_set
 		sub_tilemap.set_cell(0, 0, cell, is_x_flipped, is_y_flipped, is_transposed)
-		var sprite := Sprite.new()
+		var sprite := Sprite2D.new()
 		sprite.position = tilemap.map_to_world(cell_pos)
 		if is_not_in_position:
 			sprite.position += shift
@@ -59,7 +59,7 @@ func copy_cells():
 		tracks.append(sprite)
 
 
-func align(track: Sprite) -> void:
+func align(track: Sprite2D) -> void:
 	if track == null:
 		aligned_tracks.append(\"You tried to align a track that doesn't exist. Make sure your indices make sense\")
 	else:
@@ -71,7 +71,7 @@ func _realign_selected_sprites() -> void:
 	if item is String:
 		push_error(item)
 	elif item:
-		var track := item as Sprite
+		var track := item as Sprite2D
 		var tween := Tween.new()
 		track.add_child(tween)
 		var initial := track.position

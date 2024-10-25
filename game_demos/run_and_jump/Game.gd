@@ -5,16 +5,16 @@ var points := 0
 const Menu := preload("./Menu.gd")
 const Level := preload("./Level.gd")
 
-onready var _level := $Level as Level
-onready var _menu := $Menu as Menu
-onready var _score := $Score as Label
+@onready var _level := $Level as Level
+@onready var _menu := $Menu as Menu
+@onready var _score := $Score as Label
 
 
 func _ready() -> void:
 	randomize()
-	_menu.connect("request_play", self, "play")
-	_level.connect("add_point", self, "increase_points")
-	_level.connect("game_over", self, "game_over")
+	_menu.connect("request_play", Callable(self, "play"))
+	_level.connect("add_point", Callable(self, "increase_points"))
+	_level.connect("game_over", Callable(self, "game_over"))
 
 
 func increase_points() -> void:

@@ -1,51 +1,51 @@
+@tool
 # Represents a slice from the script file.
-tool
 extends Resource
 class_name SliceProperties
 
 const SceneProperties = preload("./SceneProperties.gd")
 const ScriptProperties = preload("./ScriptProperties.gd")
 
-export var scene_properties: Resource setget set_scene_properties, get_scene_properties
-export var script_properties: Resource setget set_script_properties, get_script_properties
+@export var scene_properties: Resource: get = get_scene_properties, set = set_scene_properties
+@export var script_properties: Resource: get = get_script_properties, set = set_script_properties
 # Amount of tabs before a slice annotation. We normalize scripts to use tabs for indentation.
-export var leading_spaces := 0
+@export var leading_spaces := 0
 # Annotation keyword. It's always `EXPORT` for the moment, but if more keywords
 # are added later, this could change
-export var keyword := "EXPORT"
+@export var keyword := "EXPORT"
 # True if the slice is a closing slice.
 #
 # Closing slices are only used to determine slice limits during slicing, and
 # thrown away later. You shouldn't ever see this being true
-export var closing := false
+@export var closing := false
 # Name of the slice. Will be empty if is_full_file is true
-export var name := ""
+@export var name := ""
 # True if the slice corresponds to a full script
-export var is_full_file := false
+@export var is_full_file := false
 # Start line of the slice, excluding the keyword comment
-export var start := 0
+@export var start := 0
 # End of the slice, excluding the keyword comment
-export var end := 0
+@export var end := 0
 # All the lines before the slice
-export var lines_before := []
+@export var lines_before := []
 # All the lines after the slice
-export var lines_after := []
+@export var lines_after := []
 # All the lines of the slice
-export var lines_editable := []
+@export var lines_editable := []
 
 # Returns the slice
-var slice_text: String setget _read_only, get_slice_text
+var slice_text: String: get = get_slice_text, set = _read_only
 # Returns the recomposed file
-var full_text: String setget _read_only, get_full_text
+var full_text: String: get = get_full_text, set = _read_only
 # A cache for the modified slice
 var current_text: String
 # Returns the full text, but the slice is replaced with the modified slice
-var current_full_text: String setget _read_only, get_current_full_text
+var current_full_text: String: get = get_current_full_text, set = _read_only
 # Returns the amount of lines before the slice
-var start_offset: int setget _read_only, get_start_offset
+var start_offset: int: get = get_start_offset, set = _read_only
 # Returns the amount of lines before the slice, plus the amount of lines in the
 # slice
-var end_offset: int setget _read_only, get_end_offset
+var end_offset: int: get = get_end_offset, set = _read_only
 
 
 func _init() -> void:
@@ -55,8 +55,8 @@ func _init() -> void:
 
 
 # Indents every line of a text by `indent_amount`
-static func _indent_text(indent_amount: int, lines: PoolStringArray) -> PoolStringArray:
-	var _text = PoolStringArray()
+static func _indent_text(indent_amount: int, lines: PackedStringArray) -> PackedStringArray:
+	var _text = PackedStringArray()
 	var indent = "\t".repeat(indent_amount)
 	for index in lines.size():
 		var line: String = lines[index]
@@ -102,12 +102,12 @@ func get_main_lines() -> Array:
 
 # Returns the slice itself
 func get_slice_text() -> String:
-	return PoolStringArray(lines_editable).join("\n")
+	return "\n".join(PackedStringArray(lines_editable))
 
 
 # Returns the full text, with proper indentation
 func get_full_text() -> String:
-	return PoolStringArray(get_main_lines()).join("\n")
+	return "\n".join(PackedStringArray(get_main_lines()))
 
 
 # Returns the full text, with proper indentation, with the current text
@@ -115,7 +115,7 @@ func get_full_text() -> String:
 func get_current_full_text() -> String:
 	var lines = current_text.split("\n")
 	var middle_text := Array(_indent_text(leading_spaces, lines) if leading_spaces else lines)
-	return PoolStringArray(lines_before + middle_text + lines_after).join("\n")
+	return PackedStringArray(lines_before + middle_text + "\n".join(lines_after))
 
 
 func get_start_offset() -> int:
@@ -175,14 +175,14 @@ const COMMENT_REGEX := "#.*$"
 # making it easier to check the student's source code via string matching.
 # Returns an array of strings, one per line of code.
 static func preprocess_practice_code(code: String) -> String:
-	var result := PoolStringArray()
+	var result := PackedStringArray()
 	var comment_suffix := RegEx.new()
 	comment_suffix.compile(COMMENT_REGEX)
 	for line in code.split("\n"):
 		line = line.strip_edges().replace(" ", "")
-		if not (line.empty() or line.begins_with("#")):
+		if not (line.is_empty() or line.begins_with("#")):
 			result.push_back(comment_suffix.sub(line, ""))
-	return result.join("\n")
+	return "\n".join(result)
 
 
 func _to_string() -> String:

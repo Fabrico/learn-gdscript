@@ -1,12 +1,12 @@
-tool
+@tool
 extends EditorPlugin
 
 const PRESETS_FILENAME := 'presets.hex'
 
 
 func _enter_tree() -> void:
-	var presets := PoolColorArray()
-	var presets_raw := PoolStringArray()
+	var presets := PackedColorArray()
+	var presets_raw := PackedStringArray()
 	var presets_file := File.new()
 	var presets_path: String = get_script().resource_path.get_base_dir().plus_file(PRESETS_FILENAME)
 

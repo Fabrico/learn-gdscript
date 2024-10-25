@@ -34,6 +34,6 @@ static func load_fresh(resource_path: String) -> Resource:
 	var actual_resource = ResourceLoader.load(intermediate_path, "", true)
 	actual_resource.take_over_path(resource_path)
 
-	var directory = Directory.new()
+	var directory = DirAccess.new()
 	directory.remove(intermediate_path)
 	return actual_resource

@@ -11,7 +11,7 @@ original_script = "extends CenterContainer
 
 var current_item: Node = null
 var used_items := []
-var used_items_names := PoolStringArray()
+var used_items_names := PackedStringArray()
 
 onready var grid_container := $GridContainer as GridContainer
 

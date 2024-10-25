@@ -1,12 +1,12 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
-export var jump_speed := 200
-export var jump_max_height := 100.0
-export var gravity := 4000
+@export var jump_speed := 200
+@export var jump_max_height := 100.0
+@export var gravity := 4000
 
 var is_walking := false
 
-onready var animated_sprite := $AnimatedSprite as AnimatedSprite
+@onready var animated_sprite := $AnimatedSprite2D as AnimatedSprite2D
 
 var _velocity_y = 0.0
 var _jump_starting_point := 0.0
@@ -38,4 +38,7 @@ func _physics_process(delta: float) -> void:
 	_velocity_y += gravity * delta
 
 	var velocity := Vector2(0, _velocity_y)
-	_velocity_y = move_and_slide(velocity, Vector2.UP).y
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	_velocity_y = velocity.y

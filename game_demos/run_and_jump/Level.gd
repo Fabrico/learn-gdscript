@@ -10,10 +10,10 @@ signal add_point
 var _speed := 0.0
 var _started := false
 
-onready var _player := $Player as Player
-onready var _background_player := $Background/AnimationPlayer as AnimationPlayer
-onready var _timer := $Timer as Timer
-onready var _obstacles := $ObstaclesDispenser as ObstacleDispenser
+@onready var _player := $Player as Player
+@onready var _background_player := $Background/AnimationPlayer as AnimationPlayer
+@onready var _timer := $Timer as Timer
+@onready var _obstacles := $ObstaclesDispenser as ObstacleDispenser
 
 
 func _add_obstacle() -> void:
@@ -22,11 +22,11 @@ func _add_obstacle() -> void:
 	obstacle.global_position.x = get_viewport_rect().size.x
 	obstacle.speed = _speed
 	obstacle.set_destination(0, 4.0)
-	obstacle.connect("body_entered", self, "_on_body_entered")
-	obstacle.connect("reached_destination", self, "_on_obstacle_reached_destination")
+	obstacle.connect("body_entered", Callable(self, "_on_body_entered"))
+	obstacle.connect("reached_destination", Callable(self, "_on_obstacle_reached_destination"))
 
 
-func set_speed(new_speed: float) -> void:
+func set_velocity(new_speed: float) -> void:
 	_speed = new_speed
 	_background_player.playback_speed = _speed
 	for obstacle in _obstacles.get_children():
@@ -34,7 +34,7 @@ func set_speed(new_speed: float) -> void:
 
 
 func _increase_speed() -> void:
-	set_speed(_speed + 0.1)
+	set_velocity(_speed + 0.1)
 
 
 func _get_animation_length() -> float:
@@ -62,7 +62,7 @@ func game_over() -> void:
 		obstacle.queue_free()
 	_timer.stop()
 	_player.is_walking = false
-	set_speed(0)
+	set_velocity(0)
 	_player.set_physics_process(false)
 
 
@@ -70,6 +70,6 @@ func start() -> void:
 	_started = true
 	_timer.start()
 	_player.is_walking = true
-	set_speed(1.0)
+	set_velocity(1.0)
 	_add_obstacle()
 	_player.set_physics_process(true)

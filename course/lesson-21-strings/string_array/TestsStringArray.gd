@@ -19,7 +19,7 @@ func test_use_for_loop() -> String:
 
 	var result = regex.search(_slice.current_text)
 	if result :
-		variable_name = result .get_string(1)
+		variable_name = result super.get_string(1)
 
 	if not "play_animation(" in processed_code:
 		return "Your code does not play any animations. Did you remember to call play_animation() in your for loop?"

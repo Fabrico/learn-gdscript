@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 
 const PLUGIN_NAME := "gdscript-slice-exporter"
 const SETTINGS_KEY := PLUGIN_NAME + "/scene"
@@ -9,8 +9,8 @@ const PLUGIN_CONFIG := "settings.cfg"
 var _plugin_config = ConfigFile.new()
 var _plugin: EditorPlugin
 
-var scene_path: String setget set_scene_path, get_scene_path
-var was_manually_set: bool setget set_was_manually_set, get_was_manually_set
+var scene_path: String: get = get_scene_path, set = set_scene_path
+var was_manually_set: bool: get = get_was_manually_set, set = set_was_manually_set
 
 
 func _init(plugin: EditorPlugin) -> void:
@@ -19,7 +19,7 @@ func _init(plugin: EditorPlugin) -> void:
 
 func load_settings() -> void:
 	var path = get_config_path()
-	var fs = Directory.new()
+	var fs = DirAccess.new()
 	if not fs.file_exists(path):
 		var config = ConfigFile.new()
 		fs.make_dir_recursive(path.get_base_dir())
@@ -54,7 +54,7 @@ func get_was_manually_set() -> bool:
 	return _load_setting("was_manually_set", "") as bool
 
 
-func get_icon(icon_name: String) -> Texture:
+func get_icon(icon_name: String) -> Texture2D:
 	return _plugin.get_editor_interface().get_base_control().get_icon(icon_name, "EditorIcons")
 
 

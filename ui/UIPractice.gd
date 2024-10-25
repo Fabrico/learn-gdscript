@@ -1,4 +1,4 @@
-tool
+@tool
 class_name UIPractice
 extends UINavigatablePage
 
@@ -20,13 +20,13 @@ const PracticeLeaveUnfinishedPopup := preload("components/popups/PracticeLeaveUn
 
 var REGEX_DIVSION_BY_ZERO := RegEx.new()
 
-export var test_practice: Resource
+@export var test_practice: Resource
 
 var _practice: Practice
 var _practice_completed := false
 var _practice_solution_used := false
 
-var _script_slice: SliceProperties setget _set_script_slice
+var _script_slice: SliceProperties: set = _set_script_slice
 var _tester: PracticeTester
 # If `true`, the text changed but was not saved.
 var _code_editor_is_dirty := false
@@ -48,30 +48,30 @@ var _current_scene_reset_values := {
 	transform = null,
 }
 
-onready var _layout_container := $Margin/Layout as Control
+@onready var _layout_container := $Margin/Layout as Control
 
-onready var _output_container := find_node("Output") as Control
-onready var _game_container := find_node("GameContainer") as Container
-onready var _game_view := _output_container.find_node("GameView") as GameView
-onready var _output_console := _output_container.find_node("Console") as OutputConsole
+@onready var _output_container := find_child("Output") as Control
+@onready var _game_container := find_child("GameContainer") as Container
+@onready var _game_view := _output_container.find_child("GameView") as GameView
+@onready var _output_console := _output_container.find_child("Console") as OutputConsole
 
-onready var _output_anchors := $Margin/Layout/OutputAnchors as Control
-onready var _solution_panel := find_node("SolutionContainer") as Control
-onready var _solution_editor := _solution_panel.find_node("SliceEditor") as SliceEditor
-onready var _use_solution_button := _solution_panel.find_node("UseSolutionButton") as Button
+@onready var _output_anchors := $Margin/Layout/OutputAnchors as Control
+@onready var _solution_panel := find_child("SolutionContainer") as Control
+@onready var _solution_editor := _solution_panel.find_child("SliceEditor") as SliceEditor
+@onready var _use_solution_button := _solution_panel.find_child("UseSolutionButton") as Button
 
-onready var _info_panel_anchors := $Margin/Layout/InfoPanelAnchors as Control
-onready var _info_panel := find_node("PracticeInfoPanel") as PracticeInfoPanel
-onready var _documentation_panel := find_node("DocumentationPanel") as RichTextLabel
-onready var _hints_container := _info_panel.hints_container as Revealer
+@onready var _info_panel_anchors := $Margin/Layout/InfoPanelAnchors as Control
+@onready var _info_panel := find_child("PracticeInfoPanel") as PracticeInfoPanel
+@onready var _documentation_panel := find_child("DocumentationPanel") as RichTextLabel
+@onready var _hints_container := _info_panel.hints_container as Revealer
 
-onready var _practice_list := find_node("PracticeListPopup") as PracticeListPopup
-onready var _practice_done_popup := find_node("PracticeDonePopup") as PracticeDonePopup
-onready var _practice_leave_unfinished_popup := find_node("PracticeLeaveUnfinishedPopup") as PracticeLeaveUnfinishedPopup
+@onready var _practice_list := find_child("PracticeListPopup") as PracticeListPopup
+@onready var _practice_done_popup := find_child("PracticeDonePopup") as PracticeDonePopup
+@onready var _practice_leave_unfinished_popup := find_child("PracticeLeaveUnfinishedPopup") as PracticeLeaveUnfinishedPopup
 
-onready var _code_editor := find_node("CodeEditor") as CodeEditor
+@onready var _code_editor := find_child("CodeEditor") as CodeEditor
 
-onready var _tween := $Tween as Tween
+@onready var _tween := $Tween as Tween
 
 
 func _init():
@@ -82,36 +82,36 @@ func _init():
 	_run_autotimer.wait_time = RUN_AUTOTIMER_DURATION
 	add_child(_run_autotimer)
 
-	_run_autotimer.connect("timeout", self, "_on_autotimer_timeout")
+	_run_autotimer.connect("timeout", Callable(self, "_on_autotimer_timeout"))
 
 	_on_init_set_javascript()
 
 
 func _ready() -> void:
 	randomize()
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		return
 
-	_code_editor.connect("action_taken", self, "_on_code_editor_action_taken")
-	_code_editor.connect("text_changed", self, "_on_code_editor_text_changed")
-	_code_editor.connect("console_toggled", self, "_on_console_toggled")
-	_output_console.connect("reference_clicked", self, "_on_code_reference_clicked")
-	_use_solution_button.connect("pressed", self, "_on_use_solution_pressed")
+	_code_editor.connect("action_taken", Callable(self, "_on_code_editor_action_taken"))
+	_code_editor.connect("text_changed", Callable(self, "_on_code_editor_text_changed"))
+	_code_editor.connect("console_toggled", Callable(self, "_on_console_toggled"))
+	_output_console.connect("reference_clicked", Callable(self, "_on_code_reference_clicked"))
+	_use_solution_button.connect("pressed", Callable(self, "_on_use_solution_pressed"))
 
-	_info_panel.connect("list_requested", self, "_on_list_requested")
+	_info_panel.connect("list_requested", Callable(self, "_on_list_requested"))
 
-	_practice_done_popup.connect("accepted", self, "_on_next_requested")
+	_practice_done_popup.connect("accepted", Callable(self, "_on_next_requested"))
 
-	_practice_leave_unfinished_popup.connect("confirmed", self, "_accept_unload")
-	_practice_leave_unfinished_popup.connect("denied", self, "_deny_unload")
+	_practice_leave_unfinished_popup.connect("confirmed", Callable(self, "_accept_unload"))
+	_practice_leave_unfinished_popup.connect("denied", Callable(self, "_deny_unload"))
 
-	Events.connect("practice_run_completed", self, "_test_student_code")
+	Events.connect("practice_run_completed", Callable(self, "_test_student_code"))
 
 	_update_slidable_panels()
-	_layout_container.connect("resized", self, "_update_slidable_panels")
+	_layout_container.connect("resized", Callable(self, "_update_slidable_panels"))
 
 	_solution_panel.modulate.a = 0.0
-	_solution_panel.margin_left = _output_anchors.rect_size.x
+	_solution_panel.offset_left = _output_anchors.size.x
 
 	if test_practice and get_parent() == get_tree().root:
 		setup(test_practice, null, null)
@@ -125,15 +125,15 @@ func _notification(what: int) -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	var mb := event as InputEventMouseButton
-	if mb and mb.button_index == BUTTON_LEFT and mb.pressed and get_focus_owner():
+	if mb and mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed and get_viewport().gui_get_focus_owner():
 		# Makes clicks on the empty area to remove focus from various controls, specifically
 		# the code editor.
-		get_focus_owner().release_focus()
+		get_viewport().gui_get_focus_owner().release_focus()
 
 
 func setup(practice: Practice, lesson: Lesson, course: Course) -> void:
 	if not is_inside_tree():
-		yield(self, "ready")
+		await self.ready
 
 	_practice = practice
 	_practice_completed = false
@@ -141,18 +141,18 @@ func setup(practice: Practice, lesson: Lesson, course: Course) -> void:
 
 	_info_panel.title_label.text = tr(practice.title).capitalize()
 	# FIXME: Some weird Windows issue, replace before translating so matching works.
-	_info_panel.goal_rich_text_label.bbcode_text = TextUtils.bbcode_add_code_color(
+	_info_panel.goal_rich_text_label.text = TextUtils.bbcode_add_code_color(
 		tr(practice.goal.replace("\r\n", "\n"))
 	)
 	_code_editor.text = practice.starting_code
 	_code_editor.update_cursor_position(practice.cursor_line, practice.cursor_column)
 
-	_hints_container.visible = not practice.hints.empty()
+	_hints_container.visible = not practice.hints.is_empty()
 	var index := 0
 	for hint in practice.hints:
-		var practice_hint: PracticeHint = PracticeHintScene.instance()
+		var practice_hint: PracticeHint = PracticeHintScene.instantiate()
 		practice_hint.title = tr("Hint %s") % [String(index + 1).pad_zeros(1)]
-		practice_hint.bbcode_text = tr(hint)
+		practice_hint.text = tr(hint)
 		_hints_container.add_child(practice_hint)
 		index += 1
 
@@ -207,7 +207,7 @@ func _update_labels() -> void:
 
 	_info_panel.title_label.text = tr(_practice.title).capitalize()
 	# FIXME: Some weird Windows issue, replace before translating so matching works.
-	_info_panel.goal_rich_text_label.bbcode_text = TextUtils.bbcode_add_code_color(
+	_info_panel.goal_rich_text_label.text = TextUtils.bbcode_add_code_color(
 		tr(_practice.goal.replace("\r\n", "\n"))
 	)
 
@@ -218,7 +218,7 @@ func _update_labels() -> void:
 			continue
 
 		practice_hint.title = tr("Hint %s") % [String(index + 1).pad_zeros(1)]
-		practice_hint.bbcode_text = tr(_practice.hints[index])
+		practice_hint.text = tr(_practice.hints[index])
 		index += 1
 
 	_info_panel.display_tests(_tester.get_test_names())
@@ -234,7 +234,7 @@ func _set_script_slice(new_slice: SliceProperties) -> void:
 	_script_slice = new_slice
 	_output_console.setup(_script_slice)
 
-	_current_scene = _script_slice.get_scene_properties().scene.instance()
+	_current_scene = _script_slice.get_scene_properties().scene.instantiate()
 	_current_scene_reset_values.visible = _current_scene.get("visible")
 	_current_scene_reset_values.transform = _current_scene.get("transform")
 
@@ -278,7 +278,7 @@ func _validate_and_run_student_code() -> void:
 	verifier.test()
 	var errors := verifier.errors
 
-	if not errors.empty():
+	if not errors.is_empty():
 		_code_editor.slice_editor.errors = errors
 
 		for index in errors.size():
@@ -299,13 +299,13 @@ func _validate_and_run_student_code() -> void:
 
 	# Generate a runnable script, check for uncaught errors.
 	_code_editor.set_locked_message(tr("Running Your Code..."))
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 
 	script_text = MessageBus.replace_print_calls_in_script(script_file_name, script_text)
 
 	# Guard against infinite while loops
 	if "while " in script_text:
-		var modified_code := PoolStringArray()
+		var modified_code := PackedStringArray()
 		var guard_counter = 0
 		for line in script_text.split("\n"):
 			if "while " in line and not line.strip_edges(true, false).begins_with("#"):
@@ -325,7 +325,7 @@ func _validate_and_run_student_code() -> void:
 				modified_code.append(tabs + "\t\t" + "break")
 			else:
 				modified_code.append(line)
-		script_text = modified_code.join("\n")
+		script_text = "\n".join(modified_code)
 	elif REGEX_DIVSION_BY_ZERO.search(script_text):
 		var error := ScriptError.new()
 		error.message = tr(
@@ -374,7 +374,7 @@ func _test_student_code() -> void:
 
 	var result := _tester.run_tests()
 	_info_panel.set_tests_status(result, script_file_name)
-	yield(_info_panel, "tests_updated")
+	await _info_panel.tests_updated
 
 	# Show the end of practice popup.
 	if not _practice_completed and result.is_success():
@@ -409,20 +409,20 @@ func _reset_practice() -> void:
 
 func _update_slidable_panels() -> void:
 	# Wait a frame to make sure the new size has been applied.
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 
 	# We use _output_anchors for reference because it never leaves the screen, so we can rely on it
 	# to always report the target size for one third of the hbox.
 
 	# Update info panel.
-	_info_panel.rect_min_size = Vector2(_output_anchors.rect_size.x, 0)
-	_info_panel.set_anchors_and_margins_preset(Control.PRESET_WIDE, Control.PRESET_MODE_MINSIZE)
+	_info_panel.custom_minimum_size = Vector2(_output_anchors.size.x, 0)
+	_info_panel.set_anchors_and_offsets_preset(Control.PRESET_WIDE, Control.PRESET_MODE_MINSIZE)
 
 	# Update solution panel.
-	_solution_panel.rect_min_size = Vector2(_output_anchors.rect_size.x, 0)
-	_solution_panel.set_anchors_and_margins_preset(Control.PRESET_WIDE, Control.PRESET_MODE_MINSIZE)
+	_solution_panel.custom_minimum_size = Vector2(_output_anchors.size.x, 0)
+	_solution_panel.set_anchors_and_offsets_preset(Control.PRESET_WIDE, Control.PRESET_MODE_MINSIZE)
 	if not _is_solution_panel_open:
-		_solution_panel.margin_left = _output_anchors.rect_size.x
+		_solution_panel.offset_left = _output_anchors.size.x
 
 
 func _toggle_distraction_free_mode() -> void:
@@ -522,8 +522,8 @@ func _show_solution_panel() -> void:
 
 	_tween.interpolate_property(
 		_solution_panel,
-		"margin_left",
-		_solution_panel.margin_left,
+		"offset_left",
+		_solution_panel.offset_left,
 		0.0,
 		SLIDE_TRANSITION_DURATION,
 		Tween.TRANS_SINE,
@@ -551,9 +551,9 @@ func _hide_solution_panel() -> void:
 
 	_tween.interpolate_property(
 		_solution_panel,
-		"margin_left",
-		_solution_panel.margin_left,
-		_output_anchors.rect_size.x,
+		"offset_left",
+		_solution_panel.offset_left,
+		_output_anchors.size.x,
 		SLIDE_TRANSITION_DURATION,
 		Tween.TRANS_SINE,
 		Tween.EASE_IN_OUT
@@ -673,9 +673,9 @@ func _update_nodes(script: GDScript, node_paths: Array) -> void:
 # @param props_backup Dictionary[string, *] An optional dictionary of properties
 #                                           to restore before calling `_run()`
 static func try_validate_and_replace_script(node: Node, script: GDScript, props_backup := {}) -> void:
-	if not script.can_instance():
+	if not script.can_instantiate():
 		var error_code := script.reload()
-		if not script.can_instance():
+		if not script.can_instantiate():
 			print("Script errored out (code %s); skipping replacement" % [error_code])
 			return
 
@@ -705,7 +705,7 @@ static func try_validate_and_replace_script(node: Node, script: GDScript, props_
 # @param select_properties PoolStringArray an array of property names. Leave it
 #                                          out (or pass an empty array) to select
 #                                          all properties
-static func backup_node_properties(node: Node, select_properties := PoolStringArray()) -> Dictionary:
+static func backup_node_properties(node: Node, select_properties := PackedStringArray()) -> Dictionary:
 	var props_backup := {}
 	var node_original_props := node.get_property_list()
 	var select_all := select_properties.size() == 0

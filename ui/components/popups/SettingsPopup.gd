@@ -9,20 +9,20 @@ const FRAMERATE_MAP := {
 	Framerates.NO_LIMIT: 0,
 }
 
-var _sample_default_font: DynamicFont
+var _sample_default_font: FontFile
 
-onready var _panel := $PanelContainer as PanelContainer
-onready var _color_rect := $ColorRect as ColorRect
-onready var _language_value := $PanelContainer/Column/Margin/Column/Settings/LanguageSetting/Value as OptionButton
-onready var _font_size_value := $PanelContainer/Column/Margin/Column/Settings/FontSizeSetting/ValueContainer/Value as HSlider
-onready var _font_size_sample := $PanelContainer/Column/Margin/Column/Settings/FontSizeSetting/ValueContainer/SampleText as Label
-onready var _scroll_sensitivity_slider := $PanelContainer/Column/Margin/Column/Settings/ScrollSensitivitySetting/Value as HSlider
-onready var _framerate_option := $PanelContainer/Column/Margin/Column/Settings/FramerateSetting/Value as OptionButton
+@onready var _panel := $PanelContainer as PanelContainer
+@onready var _color_rect := $ColorRect as ColorRect
+@onready var _language_value := $PanelContainer/Column/Margin/Column/Settings/LanguageSetting/Value as OptionButton
+@onready var _font_size_value := $PanelContainer/Column/Margin/Column/Settings/FontSizeSetting/ValueContainer/Value as HSlider
+@onready var _font_size_sample := $PanelContainer/Column/Margin/Column/Settings/FontSizeSetting/ValueContainer/SampleText as Label
+@onready var _scroll_sensitivity_slider := $PanelContainer/Column/Margin/Column/Settings/ScrollSensitivitySetting/Value as HSlider
+@onready var _framerate_option := $PanelContainer/Column/Margin/Column/Settings/FramerateSetting/Value as OptionButton
 
-onready var _lower_contrast := $PanelContainer/Column/Margin/Column/Settings/LowerContrasSetting/CheckBox as CheckBox
+@onready var _lower_contrast := $PanelContainer/Column/Margin/Column/Settings/LowerContrasSetting/CheckBox as CheckBox
 
-onready var _apply_button := $PanelContainer/Column/Margin/Column/Buttons/ApplyButton as Button
-onready var _cancel_button := $PanelContainer/Column/Margin/Column/Buttons/CancelButton as Button
+@onready var _apply_button := $PanelContainer/Column/Margin/Column/Buttons/ApplyButton as Button
+@onready var _cancel_button := $PanelContainer/Column/Margin/Column/Buttons/CancelButton as Button
 
 
 func _init() -> void:
@@ -34,11 +34,11 @@ func _ready() -> void:
 	_init_languages()
 	_init_values()
 	
-	_font_size_value.connect("value_changed", self, "_on_font_size_changed")
+	_font_size_value.connect("value_changed", Callable(self, "_on_font_size_changed"))
 	
-	_apply_button.connect("pressed", self, "_on_apply_settings")
-	_cancel_button.connect("pressed", self, "hide")
-	_panel.connect("visibility_changed", self, "_on_visibility_changed")
+	_apply_button.connect("pressed", Callable(self, "_on_apply_settings"))
+	_cancel_button.connect("pressed", Callable(self, "hide"))
+	_panel.connect("visibility_changed", Callable(self, "_on_visibility_changed"))
 
 
 func show() -> void:
@@ -77,7 +77,7 @@ func _init_values() -> void:
 	_scroll_sensitivity_slider.value = current_profile.scroll_sensitivity
 	_framerate_option.selected = FRAMERATE_MAP.values().find(current_profile.framerate_limit)
 	
-	_lower_contrast.pressed = current_profile.lower_contrast
+	_lower_contrast.button_pressed = current_profile.lower_contrast
 
 
 func _on_apply_settings() -> void:
@@ -96,9 +96,9 @@ func _on_apply_settings() -> void:
 
 
 func _on_font_size_changed(value: int) -> void:
-	var font_override = _sample_default_font.duplicate() as DynamicFont
+	var font_override = _sample_default_font.duplicate() as FontFile
 	font_override.size += 2 * value
-	_font_size_sample.add_font_override("font", font_override)
+	_font_size_sample.add_theme_font_override("font", font_override)
 
 
 func _on_visibility_changed() -> void:

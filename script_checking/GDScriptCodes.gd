@@ -18,7 +18,7 @@
 # translation, etc. Multiple raw messages can share the same code.
 #
 class_name GDScriptCodes
-extends Reference
+extends RefCounted
 
 # Codes start at 10000 to give some space for WarningCodes coming from the engine.
 enum ErrorCode {
@@ -284,7 +284,7 @@ const MESSAGE_DATABASE := [
 			["Expected else after ternary if."],
 			["Expected value after ternary else."],
 			["Expected string constant or identifier after '$' or '/'."],
-			["Path expected after $."],
+			["Path3D expected after $."],
 			["':' expected at end of line."],
 			["Expected ',' or ')'"],
 			["Expected ')' in expression"],
@@ -323,7 +323,7 @@ const MESSAGE_DATABASE := [
 			"Expected else after ternary if.",
 			"Expected value after ternary else.",
 			"Expected string constant or identifier after '$' or '/'.",
-			"Path expected after $.",
+			"Path3D expected after $.",
 			"':' expected at end of line.",
 			"Expected ',' or ')'",
 			"Expected ')' in expression",

@@ -12,7 +12,7 @@ extends Node
 
 enum MESSAGE_TYPE { PRINT, PRINTS, ERROR, WARNING, ASSERT }
 
-signal print_request(type, thing_to_print, file_name, line_nb, character, message_code)
+signal print_request_signal(message_type: int, message: String, file_name: String, line_nb: int, character: int, message_code: int)
 
 var script_replacements := RegExpGroup.collection(
 	{
@@ -32,7 +32,7 @@ var script_replacements := RegExpGroup.collection(
 # If `true`, calls to this singleton will also print to the regular Godot
 # console. We set this to true by default on debug builds, and false by default
 # everywhere else.
-export var print_to_output: bool = OS.is_debug_build()
+@export var print_to_output: bool = OS.is_debug_build()
 
 
 # Transforms a script's print statements (and similar) to calls to this
@@ -75,7 +75,7 @@ func replace_print_calls_in_script(script_file_name: String, script_text: String
 					var diff := int(abs(replaced_line.length() - line.length()))
 					start = ending_char + diff
 					lines[line_nb] = replaced_line
-	return lines.join("\n")
+	return "\n".join(lines)
 
 
 func print_script_error(error: ScriptError, script_file_name := "") -> void:
@@ -89,7 +89,7 @@ func print_script_error(error: ScriptError, script_file_name := "") -> void:
 
 
 func print_log(thing_to_print: Array, file_name: String, line_nb: int = 0, character: int = 0) -> void:
-	var line = PoolStringArray(thing_to_print).join(" ")
+	var line = " ".join(PackedStringArray(thing_to_print))
 	print_request(MESSAGE_TYPE.PRINT, line, file_name, line_nb, character)
 	if print_to_output:
 		prints(thing_to_print)
@@ -129,4 +129,4 @@ func print_assert(
 func print_request(
 	message_type: int, message: String, file_name: String, line_nb: int, character: int, message_code: int = -1
 ) -> void:
-	emit_signal("print_request", message_type, message, file_name, line_nb, character, message_code)
+	emit_signal("print_request_signal", message_type, message, file_name, line_nb, character, message_code)

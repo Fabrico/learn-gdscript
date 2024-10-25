@@ -1,35 +1,35 @@
 extends Control
 
 
-onready var _rich_text_label := $RichTextLabel
+@onready var _rich_text_label := $RichTextLabel
 
 
 func _ready() -> void:
 	visible = not OS.has_feature("web")
 
-	_rich_text_label.connect("meta_clicked", OS, "shell_open")
-	_rich_text_label.connect("meta_hover_started", self, "_on_meta_hover_started")
-	_rich_text_label.connect("meta_hover_ended", self, "_on_meta_hover_ended")
+	_rich_text_label.connect("meta_clicked", Callable(OS, "shell_open"))
+	_rich_text_label.connect("meta_hover_started", Callable(self, "_on_meta_hover_started"))
+	_rich_text_label.connect("meta_hover_ended", Callable(self, "_on_meta_hover_ended"))
 
-	var text := PoolStringArray([
+	var text := PackedStringArray([
 		"[right]",
 		"%04d/%02d/%02d %02d:%02d:%02d" % AppVersion.build_date,
 		" | ",
 		"%s:%s:" % [AppVersion.git_branch, AppVersion.version],
 		"[url=https://github.com/GDQuest/learn-gdscript/tree/{0}]{0}[/url]".format([AppVersion.git_commit]),
 		"[/right]"
-	]).join("")
+	]"".join())
 
 	if AppVersion.git_branch == "release":
-		text = PoolStringArray([
+		text = PackedStringArray([
 			"[right]",
 			"[url=https://github.com/GDQuest/learn-gdscript/blob/main/CHANGELOG.md]",
 			"version: %s" % AppVersion.version,
 			"[/url]",
 			"[/right]"
-		]).join("")
+		]"".join())
 
-	_rich_text_label.bbcode_text = text
+	_rich_text_label.text = text
 
 
 func _on_meta_hover_started(_meta: String) -> void:

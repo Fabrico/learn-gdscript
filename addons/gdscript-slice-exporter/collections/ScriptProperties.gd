@@ -1,18 +1,18 @@
-tool
+@tool
 extends Resource
 class_name ScriptProperties
 
-export var nodes_paths := []
+@export var nodes_paths := []
 # Path to the GDScript file
-export var script_file: GDScript setget set_script_file
+@export var script_file: GDScript: set = set_script_file
 # Full text of the script
-export(String, MULTILINE) var original_script := ""
+@export var original_script := "" # (String, MULTILINE)
 
 # Basename of the GDScript file. Helps to display the name in the UI
-var file_name := "" setget , get_file_name
+var file_name := "": get = get_file_name
 
 # full path of the GDScript file. Useful to locate the original file
-var file_path := "" setget , get_file_path
+var file_path := "": get = get_file_path
 
 func _init() -> void:
 	nodes_paths = []

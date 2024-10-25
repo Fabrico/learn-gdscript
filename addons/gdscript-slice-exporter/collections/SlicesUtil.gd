@@ -47,12 +47,12 @@ var _cached_script_properties := {}
 # @param limit        int          A maximal recursion depth 
 func export_scene_slices(packed_scene: PackedScene, node_in_tree: Node, limit := 1000) -> void:
 	if not node_in_tree.is_inside_tree():
-		yield(node_in_tree, "ready")
+		await node_in_tree.ready
 
 	_scene_properties = SceneProperties.new()
 	_scene_properties.scene = packed_scene
 
-	var unpacked_scene = packed_scene.instance()
+	var unpacked_scene = packed_scene.instantiate()
 	# Add the scene to a node so we can hide the node
 	# hiding the scene directly can fail if the scene
 	# doesn't extend CanvasItem
@@ -73,7 +73,7 @@ func export_scene_slices(packed_scene: PackedScene, node_in_tree: Node, limit :=
 # the specified annotation EXPORT.
 # If it does, adds the node to the list of handled nodes.
 func _collect_node_scripts(scene: Node, node: Node, limit: int) -> void:
-	var maybe_script: Reference = node.get_script()
+	var maybe_script: RefCounted = node.get_script()
 	if maybe_script != null and maybe_script is GDScript:
 		var script := maybe_script as GDScript
 		var script_has_annotation := _export_annotation_regex.search(script.source_code) != null
@@ -177,8 +177,8 @@ func _generate_save_path(type: String, save_name: String) -> String:
 
 func _save(type: String, resource: Resource) -> bool:
 	var directory = _generate_save_directory(type)
-	if not Directory.new().file_exists(directory):
-		var could_create_directories = Directory.new().make_dir_recursive(directory)
+	if not DirAccess.new().file_exists(directory):
+		var could_create_directories = DirAccess.new().make_dir_recursive(directory)
 		if could_create_directories != OK:
 			push_error("failed to create directory %s" % [directory])
 			return false
@@ -201,15 +201,15 @@ func _save(type: String, resource: Resource) -> bool:
 # moved later
 # @param path          String Path to the root directory
 # @param regex_pattern String A pattern to match against (as a String, it will be parsed to regex)
-static func _list_files_in_dir(path: String, regex_pattern := ".*") -> PoolStringArray:
-	var dir = Directory.new()
+static func _list_files_in_dir(path: String, regex_pattern := ".*") -> PackedStringArray:
+	var dir = DirAccess.new()
 	var valid_regex := RegEx.new()
 	valid_regex.compile(regex_pattern)
 	if not (dir.open(path) == OK):
 		push_error("Cannot open directory %s" % [path])
-		return PoolStringArray()
-	dir.list_dir_begin()
-	var files := PoolStringArray()
+		return PackedStringArray()
+	dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
+	var files := PackedStringArray()
 	var file_name = dir.get_next()
 	while file_name != "":
 		var is_valid = (not dir.current_is_dir()) and valid_regex.search(file_name) != null
@@ -219,12 +219,12 @@ static func _list_files_in_dir(path: String, regex_pattern := ".*") -> PoolStrin
 	return files
 
 # Returns paths to all scripts properties files in a directory
-static func list_scripts_properties_in_dir(path: String) -> PoolStringArray:
+static func list_scripts_properties_in_dir(path: String) -> PackedStringArray:
 	var scripts_paths := path.plus_file(RESOURCE_TYPES.SCRIPT)
 	return _list_files_in_dir(scripts_paths, '\\.gd\\.tres$')
 
 # Returns paths to all slices properties files in a directory
-static func list_slices_properties_in_dir(path: String) -> PoolStringArray:
+static func list_slices_properties_in_dir(path: String) -> PackedStringArray:
 	return _list_files_in_dir(path.plus_file(RESOURCE_TYPES.SLICE), '\\.slice\\.tres$')
 
 # Returns an exported scene properties from a given scene file

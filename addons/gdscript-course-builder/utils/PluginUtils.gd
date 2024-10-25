@@ -26,14 +26,14 @@ static func get_settings_directory(from_node: Node) -> String:
 
 static func get_cache_file(from_node: Node) -> String:
 	var settings_dir = get_settings_directory(from_node)
-	if settings_dir.empty():
+	if settings_dir.is_empty():
 		return ""
 
 	return settings_dir.plus_file(CACHE_FILE_NAME)
 
 static func get_temp_play_path(from_node: Node) -> String:
 	var settings_dir = get_settings_directory(from_node)
-	if settings_dir.empty():
+	if settings_dir.is_empty():
 		return ""
 
 	return settings_dir.plus_file(TEMP_PLAY_SUBPATH)

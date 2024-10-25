@@ -33,12 +33,15 @@ var inventory = {
 	"gems": 10,
 }
 
-onready var _grid := $Margin/Column/Grid as GridContainer
+@onready var _grid := $Margin/Column/Grid as GridContainer
 
 
 func _ready():
 	update_display()
 
+
+func run():
+	pass
 
 func add_item(name: String, amount := 1):
 	assert(name in ITEM_DATABASE)
@@ -65,7 +68,7 @@ func update_display():
 		child.queue_free()
 
 	for item in inventory:
-		var instance = DictItemScene.instance()
+		var instance = DictItemScene.instantiate()
 		assert(item in ITEM_DATABASE, "The item must exist in the ITEM_DATABASE dictionary.")
 		instance.icon = ITEM_DATABASE[item].icon
 		instance.item_name = ITEM_DATABASE[item].name

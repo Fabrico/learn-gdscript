@@ -49,7 +49,7 @@ static func save_course(course: Course, file_path: String) -> bool:
 	# TODO: Update the paths when "Save As" was used and the root resource was moved
 
 	var had_errors := false
-	var fs := Directory.new()
+	var fs := DirAccess.new()
 
 	for lesson_data in course.lessons:
 		var lesson_dir = lesson_data.resource_path.get_base_dir()
@@ -70,14 +70,14 @@ static func save_course(course: Course, file_path: String) -> bool:
 	return not had_errors
 
 static func remove_obsolete(file_paths: Array) -> void:
-	if file_paths.empty():
+	if file_paths.is_empty():
 		return
 
-	var fs := Directory.new()
+	var fs := DirAccess.new()
 	var error
 
 	for file_path in file_paths:
-		if not file_path.empty() and fs.file_exists(file_path):
+		if not file_path.is_empty() and fs.file_exists(file_path):
 			error = fs.remove(file_path)
 			if error != OK:
 				printerr(
@@ -85,7 +85,7 @@ static func remove_obsolete(file_paths: Array) -> void:
 				)
 
 static func random_lesson_path(course: Course) -> String:
-	var _file_tester := Directory.new()
+	var _file_tester := DirAccess.new()
 	var base_path := course.resource_path.get_base_dir()
 	var lesson_directory := "lesson-" + generate_random_path_slug()
 	var dirpath := base_path.plus_file(lesson_directory)
@@ -100,7 +100,7 @@ static func slugged_lesson_path(course: Course, slug: String) -> String:
 	return base_path.plus_file(lesson_slug).plus_file("lesson.tres")
 
 static func generate_random_lesson_subresource_path(lesson: Lesson, kind: String) -> String:
-	var _file_tester := Directory.new()
+	var _file_tester := DirAccess.new()
 	var base_path = lesson.resource_path.get_base_dir()
 	assert(
 		kind in SUPPORTED_LESSON_RESOURCES,

@@ -1,4 +1,4 @@
-tool
+@tool
 extends EditorPlugin
 
 var container := PluginButtons.new()
@@ -7,8 +7,8 @@ var config := preload("./utils/config.gd").new(self)
 
 
 func _enter_tree() -> void:
-	connect("scene_changed", self, "_on_scene_changed")
-	connect("main_screen_changed", self, "_on_screen_changed")
+	connect("scene_changed", Callable(self, "_on_scene_changed"))
+	connect("main_screen_changed", Callable(self, "_on_screen_changed"))
 	config.load_settings()
 
 	container.scene_path = config.scene_path
@@ -16,19 +16,19 @@ func _enter_tree() -> void:
 	container.remove_button.icon = config.get_icon("Close")
 	container.pin_button.icon = config.get_icon("Pin")
 	container.save_button.icon = config.get_icon("Save")
-	container.pin_button.pressed = config.was_manually_set
+	container.pin_button.button_pressed = config.was_manually_set
 
-	container.connect("scene_path_changed", self, "_on_scene_path_changed")
-	container.connect("file_browser_requested", file_dialog, "popup_centered_ratio")
-	container.connect("save_button_pressed", self, "_on_save_button_pressed")
-	container.connect("pin_button_toggled", config, "set_was_manually_set")
+	container.connect("scene_path_changed", Callable(self, "_on_scene_path_changed"))
+	container.connect("file_browser_requested", Callable(file_dialog, "popup_centered_ratio"))
+	container.connect("save_button_pressed", Callable(self, "_on_save_button_pressed"))
+	container.connect("pin_button_toggled", Callable(config, "set_was_manually_set"))
 
 	add_control_to_container(CONTAINER_TOOLBAR, container)
 	# We are 100% sure that there are 2 items to the left of us that we need to shift over.
 	# 100% sure, I tell you.
 	container.get_parent().move_child(container, container.get_index() - 2)
 
-	file_dialog.connect("file_selected", self, "_on_file_dialog_file_selected")
+	file_dialog.connect("file_selected", Callable(self, "_on_file_dialog_file_selected"))
 	get_editor_interface().get_base_control().add_child(file_dialog)
 
 
@@ -43,11 +43,11 @@ func _on_file_dialog_file_selected(path: String) -> void:
 		container.scene_path = path
 		config.scene_path = path
 		config.was_manually_set = true
-		container.pin_button.pressed = true
+		container.pin_button.button_pressed = true
 	else:
 		container.scene_path = get_current_scene_path()
 		config.was_manually_set = false
-		container.pin_button.pressed = false
+		container.pin_button.button_pressed = false
 
 
 func get_current_scene_path() -> String:
@@ -60,7 +60,7 @@ func get_current_scene_path() -> String:
 func _on_scene_path_changed(new_text: String) -> void:
 	if new_text == "":
 		config.was_manually_set = false
-		container.pin_button.pressed = false
+		container.pin_button.button_pressed = false
 		config.scene_path = ""
 
 
@@ -99,7 +99,7 @@ func _on_save_button_pressed() -> void:
 
 func _show_feedback(title: String, text: String):
 	var accept_dialog := AcceptDialog.new()
-	accept_dialog.connect("popup_hide", accept_dialog, "queue_free")
+	accept_dialog.connect("popup_hide", Callable(accept_dialog, "queue_free"))
 	accept_dialog.window_title = title
 	accept_dialog.dialog_text = text
 	get_editor_interface().get_base_control().add_child(accept_dialog)
@@ -110,11 +110,11 @@ class PluginButtons:
 	extends HBoxContainer
 
 	var scene_path_control := LineEdit.new()
-	var file_browser_button := ToolButton.new()
-	var save_button := ToolButton.new()
-	var remove_button := ToolButton.new()
-	var pin_button := ToolButton.new()
-	var scene_path: String setget set_scene_path, get_scene_path
+	var file_browser_button := Button.new()
+	var save_button := Button.new()
+	var remove_button := Button.new()
+	var pin_button := Button.new()
+	var scene_path: String: get = get_scene_path, set = set_scene_path
 
 	signal scene_path_changed(text)
 	signal file_browser_requested
@@ -122,7 +122,7 @@ class PluginButtons:
 	signal save_button_pressed
 
 	func _init() -> void:
-		scene_path_control.rect_min_size = Vector2(250, 20)
+		scene_path_control.custom_minimum_size = Vector2(250, 20)
 		pin_button.toggle_mode = true
 
 		add_child(file_browser_button)
@@ -132,11 +132,11 @@ class PluginButtons:
 		add_child(scene_path_control)
 		add_child(VSeparator.new())
 
-		scene_path_control.connect("text_changed", self, "_on_scene_path_text_changed")
-		file_browser_button.connect("pressed", self, "emit_signal", ["file_browser_requested"])
-		remove_button.connect("pressed", self, "_on_remove_button_pressed")
-		pin_button.connect("toggled", self, "_on_pin_button_toggled")
-		save_button.connect("pressed", self, "emit_signal", ["save_button_pressed"])
+		scene_path_control.connect("text_changed", Callable(self, "_on_scene_path_text_changed"))
+		file_browser_button.connect("pressed", Callable(self, "emit_signal").bind("file_browser_requested"))
+		remove_button.connect("pressed", Callable(self, "_on_remove_button_pressed"))
+		pin_button.connect("toggled", Callable(self, "_on_pin_button_toggled"))
+		save_button.connect("pressed", Callable(self, "emit_signal").bind("save_button_pressed"))
 
 	func _on_scene_path_text_changed(new_text: String):
 		emit_signal("scene_path_changed", new_text)
@@ -159,6 +159,6 @@ class ScenesFileDialog:
 	extends FileDialog
 
 	func _init() -> void:
-		mode = FileDialog.MODE_OPEN_FILE
+		mode = FileDialog.FILE_MODE_OPEN_FILE
 		access = FileDialog.ACCESS_RESOURCES
-		set_filters(PoolStringArray(["*.tscn ; Godot Scenes"]))
+		set_filters(PackedStringArray(["*.tscn ; Godot Scenes"]))

@@ -3,12 +3,12 @@
 [ext_resource path="res://game_demos/run_and_jump/Level.gd" type="Script" id=1]
 [ext_resource path="res://game_demos/run_and_jump/Background.tscn" type="PackedScene" id=2]
 [ext_resource path="res://game_demos/run_and_jump/Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-big0001.png" type="Texture" id=4]
-[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-small0001.png" type="Texture" id=5]
-[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-small0000.png" type="Texture" id=6]
-[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-big0000.png" type="Texture" id=7]
-[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-big0002.png" type="Texture" id=8]
-[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-small0002.png" type="Texture" id=9]
+[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-big0001.png" type="Texture2D" id=4]
+[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-small0001.png" type="Texture2D" id=5]
+[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-small0000.png" type="Texture2D" id=6]
+[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-big0000.png" type="Texture2D" id=7]
+[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-big0002.png" type="Texture2D" id=8]
+[ext_resource path="res://game_demos/run_and_jump/assets/obstacle-small0002.png" type="Texture2D" id=9]
 [ext_resource path="res://game_demos/run_and_jump/Obstacle.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game_demos/run_and_jump/ObstacleDispenser.gd" type="Script" id=11]
 
@@ -89,10 +89,10 @@ __meta__ = {
 [node name="Label" type="Label" parent="CanvasLayer/Control"]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -43.999
-margin_top = 6.0
-margin_right = -4.0
-margin_bottom = 20.0
+offset_left = -43.999
+offset_top = 6.0
+offset_right = -4.0
+offset_bottom = 20.0
 grow_horizontal = 0
 __meta__ = {
 "_edit_use_anchors_": false

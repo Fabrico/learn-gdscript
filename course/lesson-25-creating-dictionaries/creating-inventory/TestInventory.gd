@@ -27,7 +27,7 @@ func test_inventory_has_correct_keys():
 
 	return tr(
 		"The inventory doesn't contain all the required items. Make sure you have '%s' as keys in your inventory dictionary."
-	) % PoolStringArray(desired_inventory.keys()).join("', '")
+	) % PackedStringArray(desired_inventory."', '".join(keys()))
 
 	return ""
 
